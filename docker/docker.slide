@@ -1,0 +1,123 @@
+Introduction to Docker
+Build, Ship and Run Any App, Anywhere
+21 Dec 2017
+
+Yago Nobre
+SRE, Luizalabs
+yago.santos@luizalabs.com
+@yagoyns
+
+* The Challenge
+.image images/docker-1.png 450 _
+
+* The Matrix From Hell
+.image images/docker-2.png 450 _
+
+* Cargo Transport Pre-1960
+.image images/docker-3.png 450 _
+
+* Also a Matrix From Hell
+.image images/docker-4.png 450 _
+
+* Solution
+.image images/docker-5.png 450 _
+
+* Docker
+.image images/docker-6.png 450 _
+
+* Docker Eliminates The Matrix From Hell
+.image images/docker-7.png 450 _
+
+* A Brief Explanation of Containers
+
+- An *image* is a lightweight, stand-alone, executable package that includes everything needed to run a piece of software, including the code, a runtime, libraries, environment variables, and config files.
+- A *container* is a runtime instance of an image—what the image becomes in memory when actually executed. It runs completely isolated from the host environment by default, only accessing host files and ports if configured to do so.
+- *Containers* *run* *apps* *natively* on the host machine’s kernel. They have better performance characteristics than virtual machines that only get virtual access to host resources through a hypervisor. Containers can get native access, each one running in a discrete process, taking no more memory than any other executable.
+
+* Hello World
+
+       $ docker run hello-world
+
+        This message shows that your installation appears to be working correctly.
+
+        To generate this message, Docker took the following steps:
+         1. The Docker client contacted the Docker daemon.
+         2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+            (amd64)
+         3. The Docker daemon created a new container from that image which runs the
+            executable that produces the output you are currently reading.
+         4. The Docker daemon streamed that output to the Docker client, which sent it
+            to your terminal.
+
+        To try something more ambitious, you can run an Ubuntu container with:
+         $ docker run -it ubuntu bash
+
+        Share images, automate workflows, and more with a free Docker ID:
+         https://cloud.docker.com/
+
+        For more examples and ideas, visit:
+         https://docs.docker.com/engine/userguide/
+
+* Get a Image
+        $ docker pull alpine
+
+        Using default tag: latest
+        latest: Pulling from library/alpine
+        2fdfe1cd78c2: Pull complete
+        Digest: sha256:ccba511b1d6b5f1d83825a94f9d5b05528db456d9cf14a1ea1db892c939cda64
+        Status: Downloaded newer image for alpine:latest
+
+* List All Images
+        $ docker images
+
+        REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+        alpine              latest              e21c333399e0        2 weeks ago         4.14MB
+        hello-world         latest              f2a91732366c        4 weeks ago         1.85kB
+
+* Run a Container Interactive
+        $ docker run --interactive --tty alpine /bin/sh
+
+        / #
+
+* List All Container
+        $ docker ps --all
+
+        CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                     PORTS               NAMES
+        2a89e51b6a3d        alpine              "/bin/sh"           19 seconds ago      Exited (0) 8 seconds ago                       clever_noether
+
+* Run The Same Container Again
+        $ docker start --atach --interactive 2a89e51b6a3d
+
+        / #
+
+* Dockerfile
+.code examples/Dockerfile
+.code examples/ping.go /START OMIT/,/END OMIT/
+
+* Docker Build
+
+        $ docker build . --tag ping
+
+        Sending build context to Docker daemon  12.21MB
+        Step 1/5 : FROM golang:alpine
+         ---> f421e93ece9c
+        Step 2/5 : RUN mkdir /app
+         ---> Running in c1a8da9d5209
+        Removing intermediate container c1a8da9d5209
+         ---> 3b6034dc218a
+        Step 3/5 : ADD ping.go /app
+         ---> 9dfb7300339c
+        Step 4/5 : RUN go build -o /app/ping /app/ping.go
+         ---> Running in 0ea23b01b8fc
+        Removing intermediate container 0ea23b01b8fc
+         ---> c1160f8ab120
+        Step 5/5 : CMD ["/app/ping"]
+         ---> Running in 8f946fd6a6c5
+        Removing intermediate container 8f946fd6a6c5
+         ---> 05acce7cd9dd
+        Successfully built 05acce7cd9dd
+        Successfully tagged ping:latest
+
+* Publish Ports
+
+        $ docker run -p 8080:8080 ping
