@@ -1,0 +1,82 @@
+Kubernetes
+Authentication and Authorization
+
+Yago Nobre
+SRE, Luizalabs
+yago.santos@luizalabs.com
+@yagoyns
+
+* Kube Api Overview
+.image images/api.png 450 _
+
+* Kube Api Flow
+.image images/api_filters.png 450 _
+
+* Authentication
+* Password
+
+- kube-api:
+`--basic-auth-file=SOMEFILE`
+
+- Password File
+.code examples/password
+- kubectl:
+.code examples/password_kubectl.sh
+
+* Tokens
+- kube-api:
+`--token-auth-file=SOMEFILE`
+
+- Token File
+.code examples/token
+- kubectl:
+.code examples/token_kubectl.sh
+
+* X509 Certs
+
+- kube-api:
+`--client-ca-file=SOMEFILE`
+
+- New User:
+.code examples/x509_cert.sh
+
+- kubectl:
+.code examples/x509_kubectl.sh
+
+* Webhook
+
+- kube-api:
+`--authentication-token-webhook-config-file`
+`--authentication-token-webhook-cache-ttl`
+
+#- config file:
+#.code examples/webhook_config.yaml
+- kubectl:
+.code examples/token_kubectl.sh
+
+* Simple webhook example
+.code examples/auth_webhook/main.go /^func authentication\(/,/^}/
+
+* Service Account
+- Deploy spec:
+.code examples/sa_deploy.yaml
+
+- kubectl:
+.code examples/sa_kubectl.sh
+
+* 
+- OpenID
+- Authenticating Proxy
+- Keystone
+
+* Authorization
+
+* RBAC
+- Role and ClusterRole
+- RoleBindng and ClusterRoleBinding
+.code examples/rbac_kubectl.sh
+
+* 
+- ABAC
+- Node
+- Webhook

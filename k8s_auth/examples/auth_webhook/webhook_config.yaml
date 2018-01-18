@@ -1,0 +1,18 @@
+# clusters refers to the remote service.
+clusters:
+  - name: simple-webhook-auth
+    cluster:
+      server: http://localhost:3000/authenticate
+
+# users refers to the API server's webhook configuration.
+users:
+  - name: simple-webhook-auth
+    user:
+
+# kubeconfig files require a context. Provide one for the API server.
+current-context: webhook
+contexts:
+- context:
+    cluster: simple-webhook-auth
+    user: simple-webhook-auth
+  name: webhook

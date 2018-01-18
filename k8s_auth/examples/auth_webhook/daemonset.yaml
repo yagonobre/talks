@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  labels:
+    k8s-app: auth
+  name: authn
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      k8s-app: auth
+  template:
+    metadata:
+      labels:
+        k8s-app: auth
+    spec:
+      containers:
+      - image: yago/auth
+        name: auth
+        ports:
+        - containerPort: 3000
+          hostPort: 3000
+          protocol: TCP
+      hostNetwork: true
+      restartPolicy: Always
