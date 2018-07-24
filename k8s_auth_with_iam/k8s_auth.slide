@@ -1,0 +1,58 @@
+Kubernetes
+Authentication With IAM
+
+Yago Nobre
+Software Engineer, Nubank
+yago.nobre@nubank.com.br
+@yagoyns
+
+* Kube Api Overview
+.image images/api.png 450 _
+
+* Kube Api Flow
+.image images/api_filters.png 450 _
+
+* The Cluster
+.code examples/kubeadm.sh
+
+* Authentication
+* X509 Certs
+
+- kube-api:
+`--client-ca-file=SOMEFILE`
+
+- New User:
+.code examples/x509_cert.sh
+
+- kubectl:
+.code examples/x509_kubectl.sh
+
+* Tokens
+- kube-api:
+`--token-auth-file=SOMEFILE`
+
+- Token File
+.code examples/token
+- kubectl:
+.code examples/token_kubectl.sh
+
+* Webhook
+
+- kube-api:
+`--authentication-token-webhook-config-file`
+`--authentication-token-webhook-cache-ttl`
+
+#- config file:
+#.code examples/webhook_config.yaml
+- kubectl:
+.code examples/token_kubectl.sh
+
+* AWS IAM Authenticator
+
+* Configuring IAM roles
+.code examples/iam-auth.sh
+
+* Configuring k8s
+.code examples/iam-server.sh
+
+* Kube2iam Demo

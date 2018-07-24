@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: kube-system
+  name: kube2iam
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  namespace: kube-system
+  name: kube2iam
+rules:
+  - apiGroups: [""]
+    resources: ["namespaces", "pods"]
+    verbs: ["list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  namespace: kube-system
+  name: kube2iam
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kube2iam
+subjects:
+  - kind: ServiceAccount
+    name: kube2iam
+    namespace: kube-system
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  namespace: kube-system
+  name: kube2iam
+  labels:
+    app: kube2iam
+spec:
+  selector:
+    matchLabels:
+      name: kube2iam
+  template:
+    metadata:
+      labels:
+        name: kube2iam
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ""
+    spec:
+      hostNetwork: true
+      serviceAccountName: kube2iam
+      containers:
+        - image: jtblin/kube2iam
+          name: kube2iam
+          args:
+            - "--base-role-arn=arn:aws:iam::00000:role/"
+            - "--iptables=true"
+            - "--host-ip=$(HOST_IP)"
+            - "--host-interface=cali+"
+          env:
+            - name: HOST_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: AWS_REGION
+              value: us-east-1
+          ports:
+            - containerPort: 8181
+              hostPort: 8181
+              name: http
+          securityContext:
+            privileged: true
